@@ -12,13 +12,20 @@ import Combine
 class HomeViewModel: Decodable {
 	
 	let results: [Results]
+	
+	let total_results: Int
 
 }
 
 struct Results: Decodable {
 	
-	var posterImage: AnyPublisher<UIImage, Error> {
-		return MoviePosterFetch.fetchMoviePoster(posterURL: poster_path)
+	var posterImage: AnyPublisher<UIImage, Error>? {
+		
+		guard let posterPath = poster_path else {
+			// Handle the case where poster_path is nil (optional)
+			return nil
+		}
+		return MoviePosterFetch.fetchMoviePoster(posterURL: posterPath)
 	}
 				
 	let original_language: String
@@ -27,13 +34,14 @@ struct Results: Decodable {
 	
 	let overview: String
 	
-	let poster_path: String
+	let poster_path: String?
 	
 	let release_date: String
 	
 	let vote_average: Double
 	
 	let genre_ids: [Int]
+	
 }
 
 

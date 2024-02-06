@@ -35,9 +35,21 @@ class DatabaseService {
 		
 	}
 	
+	func isMovieSaved(movieTitle: String) -> Bool {
+		do {
+			let allMovies = try context?.fetch(FetchDescriptor<HomeViewStorageModel>())
+			return allMovies?.contains(where: { $0.title == movieTitle }) == true
+		} catch {
+			print("Error checking if movie is saved: \(error)")
+			return false
+		}
+	}
+	
+	
 	func saveMovie(originalLanguage: String, title: String, overview: String, posterPath: String, releaseDate: String, voteAverage: Double, genreIds: [Int], isSaved: Bool) {
 		
 		let movieTobeSaved = HomeViewStorageModel(original_language: originalLanguage, title: title, overview: overview, poster_path: posterPath, release_date: releaseDate, vote_average: voteAverage, genre_ids: genreIds, isSaved: isSaved )
+		
 		context?.insert(movieTobeSaved)
 	}
 	

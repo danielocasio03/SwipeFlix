@@ -15,7 +15,7 @@ class ChipView: UIView {
 		super.init(frame: frame)
 		
 		translatesAutoresizingMaskIntoConstraints = false
-		backgroundColor = colorManager.darkergray
+		backgroundColor = colorManager.black30
 		layer.cornerRadius = 10
 	}
 	

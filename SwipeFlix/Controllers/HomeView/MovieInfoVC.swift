@@ -89,7 +89,7 @@ class MovieInfoVC: UIViewController {
 	lazy var dismissButton: UIButton = {
 		let button = UIButton()
 		button.translatesAutoresizingMaskIntoConstraints = false
-		button.tintColor = colorManager.darkgray
+		button.tintColor = colorManager.black60
 		button.addTarget(self, action: #selector(dismissTapped), for: .touchUpInside)
 
 		let symbolconfig = UIImage.SymbolConfiguration(pointSize: 45, weight: .light)
@@ -202,18 +202,55 @@ class MovieInfoVC: UIViewController {
 	
 	func handleMovieDataSave() {
 		if favoriteButton.isSelected {
+			
 			if let movie = movieData {
-				print("THIS WAS SAVED: \(movie.title)")
-				storageService.saveMovie(originalLanguage: movie.original_language, title: movie.title, overview: movie.overview, posterPath: movie.poster_path, releaseDate: movie.release_date, voteAverage: movie.vote_average, genreIds: movie.genre_ids, isSaved: true)
-			}
-		}
-			else {
-				if let movie = savedMovie {
-					print("THIS WAS DELETED FROM MEMORY: \(movie.title)")
-					storageService.deleteMovie(movie: movie)
+				if !storageService.isMovieSaved(movieTitle: movie.title) {
+					// Movie is not saved, so save it
+					print("THIS WAS SAVED: \(movie.title)")
+					
+					storageService.saveMovie (
+						originalLanguage: movie.original_language,
+						title: movie.title,
+						overview: movie.overview,
+						posterPath: movie.poster_path!,
+						releaseDate: movie.release_date,
+						voteAverage: movie.vote_average,
+						genreIds: movie.genre_ids,
+						isSaved: true
+					)
+					
+				} else {
+					
+					// Movie is already saved
+					print("Movie is already saved")
+					
 				}
 			}
+		
+	} else {
+			if let movie = savedMovie {
+				print("THIS WAS DELETED FROM MEMORY: \(movie.title)")
+				storageService.deleteMovie(movie: movie)
+			}
+		}
 	}
+	
+	
+//	func handleMovieDataSave() {
+//		if favoriteButton.isSelected {
+//			if let movie = movieData {
+//				print("THIS WAS SAVED: \(movie.title)")
+//
+//				storageService.saveMovie(originalLanguage: movie.original_language, title: movie.title, overview: movie.overview, posterPath: movie.poster_path!, releaseDate: movie.release_date, voteAverage: movie.vote_average, genreIds: movie.genre_ids, isSaved: true)
+//			}
+//		}
+//		else {
+//			if let movie = savedMovie {
+//				print("THIS WAS DELETED FROM MEMORY: \(movie.title)")
+//				storageService.deleteMovie(movie: movie)
+//			}
+//		}
+//	}
 	
 	@objc func favoriteTapped() {
 		favoriteButton.isSelected.toggle()
@@ -250,6 +287,20 @@ class MovieInfoVC: UIViewController {
 			releaseLabel.text = "Release: \(selectedMovie.release_date.prefix(7))"
 			releaseLabel.centerXAnchor.constraint(equalTo: chipsStack.arrangedSubviews[2].centerXAnchor).isActive = true
 			releaseLabel.centerYAnchor.constraint(equalTo: chipsStack.arrangedSubviews[2].centerYAnchor).isActive = true
+		
+		
+		if let movie = movieData {
+			if !storageService.isMovieSaved(movieTitle: movie.title) {
+				return
+				
+			} else {
+				favoriteButton.isSelected = true
+				
+			}
+		}
+		
+		
+		
 	}
 	
 	func displayWatchListData(selectedMovie: HomeViewStorageModel, poster: UIImage) {

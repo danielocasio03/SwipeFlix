@@ -44,9 +44,11 @@ class HomeViewController: UIViewController {
 		updateWatchlist()
 		setupView()
 		setupCollectionView()
-		
-		
-		
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		updateWatchlist()
 	}
 	
 	
@@ -109,6 +111,7 @@ class HomeViewController: UIViewController {
 			}
 			if let data {
 				self.watchlistMovies = data
+				
 				DispatchQueue.main.async {
 					self.collectionView.reloadData()
 				}
@@ -149,16 +152,28 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 			if movieDictionary[indexPath.section]?[indexPath.item].posterImage == nil {
 				cell.moviePoster.image = nil
 			} else {
-				subscription = movieDictionary[indexPath.section]?[indexPath.item].posterImage
-					.receive(on: DispatchQueue.main)
-					.sink(receiveCompletion: {status in
-						print("Movie Poster assignment \(status)") },
-						  receiveValue: {image in
-						cell.moviePoster.image = image})
-				subscriptions[indexPath] = subscription
-				cell.moviePoster.isHidden = false
+				if let posterImage = movieDictionary[indexPath.section]?[indexPath.item].posterImage {
+					subscription = posterImage
+						.receive(on: DispatchQueue.main)
+						.sink(receiveCompletion: {status in
+							print("Movie Poster assignment \(status)") },
+							  receiveValue: {image in
+							cell.moviePoster.image = image})
+					subscriptions[indexPath] = subscription
+					cell.moviePoster.isHidden = false
+				} else {
+					cell.moviePoster.image = UIImage(named: "NoImageAvailable")
+					cell.moviePoster.isHidden = false
+				}
 			}
 		}
+		
+		//Cell Animation
+		cell.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 2, initialSpringVelocity: 1 ,options: [], animations: {
+			cell.transform = .identity
+		}, completion: nil)
+		
 		return cell
 	}
 	
@@ -187,7 +202,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 			
 			guard let selectedMovie = movieDictionary[indexPath.section]?[indexPath.item] else {return}
 			
-			subscription = movieDictionary[indexPath.section]?[indexPath.item].posterImage
+			subscription = movieDictionary[indexPath.section]?[indexPath.item].posterImage?
 				.receive(on: DispatchQueue.main)
 				.sink(receiveCompletion: {completion in print(completion)}, receiveValue: {image in
 					movieInfoVC.displayData(selectedMovie: selectedMovie, indexPath: indexPath, poster: image)})

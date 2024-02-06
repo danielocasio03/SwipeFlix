@@ -11,6 +11,7 @@ import UIKit
 
 class SearchView: UIView {
 	
+	//MARK: - Declarations
 	let colorManager = ColorManager()
 	
 	lazy var screenTitle: UILabel = {
@@ -20,6 +21,13 @@ class SearchView: UIView {
 		label.textColor = .white
 		label.font = UIFont(name: "Comfortaa-Light", size: 25)
 		return label
+	}()
+	
+	lazy var gradientLayer: CAGradientLayer = {
+		let gradient = CAGradientLayer()
+		gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
+		gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
+		return gradient
 	}()
 	
 	lazy var searchBar: UITextField = {
@@ -39,41 +47,51 @@ class SearchView: UIView {
 		return textField
 	}()
 	
+	lazy var searchButton: UIButton = {
+		let button = UIButton()
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+		button.tintColor = colorManager.faintWhite
+		return button
+	}()
+	
+	//MARK: - Init
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		
+		//View
 		backgroundColor = .black
 		translatesAutoresizingMaskIntoConstraints = false
-		
+		//Screen Title
 		addSubview(screenTitle)
+		//Search Bar
 		addSubview(searchBar)
+		//Search Button
+		addSubview(searchButton)
+		//Gradient
+		gradientLayer.colors = [colorManager.gradientPink.cgColor, colorManager.gradientPurple.cgColor]
+		layer.insertSublayer(gradientLayer, at: 0)
 		
 		NSLayoutConstraint.activate([
+			//Screen Title
 			screenTitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30),
 			screenTitle.topAnchor.constraint(equalTo: topAnchor, constant: 150),
-			
+			//Search Bar
 			searchBar.topAnchor.constraint(equalTo: screenTitle.bottomAnchor, constant: 15),
 			searchBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 17),
 			searchBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -17),
-			searchBar.heightAnchor.constraint(equalToConstant: 28)
+			searchBar.heightAnchor.constraint(equalToConstant: 28),
+			//Search Button
+			searchButton.trailingAnchor.constraint(equalTo: searchBar.trailingAnchor, constant: -5),
+			searchButton.centerYAnchor.constraint(equalTo: searchBar.centerYAnchor)
 		])
 		
 	}
 	
+	
 	override func layoutSubviews() {
 		super.layoutSubviews()
-		
-		let gradient = CAGradientLayer()
-		
-		gradient.colors = [colorManager.gradientPink.cgColor, colorManager.gradientPurple.cgColor]
-		
-		gradient.startPoint = CGPoint(x: 0.5, y: 0.0)
-		gradient.endPoint = CGPoint(x: 0.5, y: 1.0)
-		
-		gradient.frame = self.bounds
-		
-		self.layer.insertSublayer(gradient, at: 0)
-		
+		//Upon subviews being laid out, gradients frame is set to equal views bounds
+		gradientLayer.frame = bounds
 	}
 	
 	

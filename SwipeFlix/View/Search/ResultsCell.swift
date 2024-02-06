@@ -42,13 +42,12 @@ class ResultsCell: UITableViewCell {
 		return textView
 	}()
 	
-	var chipsStack: UIStackView = {
-		let stack = UIStackView()
-		stack.translatesAutoresizingMaskIntoConstraints = false
-		stack.axis = .horizontal
-		stack.distribution = .equalSpacing
-		stack.alignment = .leading
-		return stack
+	var movieDetailsLabel: UILabel = {
+		let label = UILabel()
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.font = UIFont(name: "Comfortaa-Light", size: 8)
+		label.backgroundColor = .clear
+		return label
 	}()
 	
 	
@@ -75,6 +74,7 @@ class ResultsCell: UITableViewCell {
 		container.backgroundColor = colorManager.black0.withAlphaComponent(0.20)
 		container.layer.cornerRadius = 25
 		container.clipsToBounds = true
+		
 		//MoviePoster
 		container.addSubview(moviePoster)
 		moviePoster.layer.cornerRadius = 15
@@ -82,11 +82,12 @@ class ResultsCell: UITableViewCell {
 		//Movie Title
 		container.addSubview(movieTitle)
 		movieTitle.textColor = colorManager.faintWhite
+		//Movie Details
+		container.addSubview(movieDetailsLabel)
+		movieDetailsLabel.textColor = .gray
 		//Movie Description
 		container.addSubview(movieDescription)
 		movieDescription.textColor = colorManager.faintWhite
-		//Chips Stack
-		container.addSubview(chipsStack)
 
 		
 		container.translatesAutoresizingMaskIntoConstraints = false
@@ -101,16 +102,16 @@ class ResultsCell: UITableViewCell {
 			moviePoster.topAnchor.constraint(equalTo: container.topAnchor, constant: 10),
 			moviePoster.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
 			moviePoster.widthAnchor.constraint(equalToConstant: 60),
-//			Movie Title
+			//Movie Title
 			movieTitle.topAnchor.constraint(equalTo: container.topAnchor, constant: 8),
 			movieTitle.leadingAnchor.constraint(equalTo: moviePoster.trailingAnchor, constant: 7),
 			movieTitle.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -5),
-			//Chips Stack
-			chipsStack.topAnchor.constraint(equalTo: movieTitle.bottomAnchor, constant: 5),
-			chipsStack.leadingAnchor.constraint(equalTo: movieTitle.leadingAnchor, constant: 0),
-			
+			//Movie Details
+			movieDetailsLabel.topAnchor.constraint(equalTo: movieTitle.bottomAnchor, constant: 5),
+			movieDetailsLabel.trailingAnchor.constraint(equalTo: movieTitle.trailingAnchor, constant: 0),
+			movieDetailsLabel.leadingAnchor.constraint(equalTo: movieTitle.leadingAnchor, constant: 1),
 			//Movie Description
-			movieDescription.topAnchor.constraint(equalTo: movieTitle.bottomAnchor, constant: 15),
+			movieDescription.topAnchor.constraint(equalTo: movieDetailsLabel.bottomAnchor, constant: 3),
 			movieDescription.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -10),
 			movieDescription.leadingAnchor.constraint(equalTo: moviePoster.trailingAnchor, constant: 5),
 			movieDescription.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -10)
